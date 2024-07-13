@@ -1,0 +1,7 @@
+Financial Analysis 
+--------------------------------- 
+Total Months: 86 
+Total: $22564198 
+Average Change: $262374.40 
+Greatest Monthly Profit: Mar-13 $1141840 
+Greatest Monthly Loss: Dec-10 $-1194133
