@@ -8,6 +8,7 @@ outputPath = os.path.join('analysis', 'results.txt')
 
 # target recording variables
 totalVotes = 0
+candidateList = []
 ballot = []
 '''
 Each candidate will be defined as a dictionary in this
@@ -23,32 +24,42 @@ with open(dataPath) as votesFile:
 
     # loop through each line to get each candidate
     for row in readable:
-        # if the candidate name on the ballot hasn't been recorded...
-        
-            # create a new dictionary in the ballot with the candidate's name
-            ballot.append({"Name": row[2], "Votes": 0, "Percent": 0})
-
-    # then loop through each line to count votes
-    for row in readable:
         # increment vote counter
         totalVotes += 1
-        # find the matching candidate key, and update their vote counters
-        """-----------------------"""
-        
-# calculate the percentage totals of each candidate
-"""-----------------"""
-# determine the election's winner
-"""-----------------"""
+        # If the candidate is not in the candidate list...
+        if row[2] not in candidateList:
+            # create new entries for them in the ballot & candidate list,
+            # and add a vote to the candidate's total
+            ballot.append({"Name": row[2], "Votes": 1, "Percent": 0})
+            candidateList.append(row[2])
+        else:
+            # find the candidate voted for, and update the tally
+            for candidate in ballot:
+                if candidate["Name"] == row[2]:
+                    candidate["Votes"] = candidate["Votes"] + 1
+
+# Set variables to hold the winner
+winner = "UNKNOWN"
+winningCount = 0
+
+# for each candidate...
+for candidate in ballot:
+    # calculate the percentage totals of each candidate, and format correctly
+    candidate["Percent"] = (candidate["Votes"] / totalVotes) * 100
+    # determine if they are winning the election
+    if candidate["Votes"] > winningCount:
+        winningCount = candidate["Votes"]
+        winner = candidate["Name"]
 
 # print results to console
 print("Election Results")
 print("---------------------------------")
 print(f"Total Votes: {totalVotes}")
 print("---------------------------------")
-for candidates in ballot:
-    print(f"-name-: -votePercent-% (-votes-)")
+for candidate in ballot:
+    print(f"{candidate["Name"]}: {candidate["Percent"]:.3f}% ({candidate["Votes"]})")
 print("---------------------------------")
-print(f"Winner: -winner-")
+print(f"Winner: {winner}")
 print("---------------------------------")
 
 # open output file
@@ -58,9 +69,9 @@ analysis.write("Election Results \n")
 analysis.write("--------------------------------- \n")
 analysis.write(f"Total Votes: {totalVotes} \n")
 analysis.write("--------------------------------- \n")
-for candidates in ballot:
-    analysis.write(f"-name-: -votePercent-% (-votes-) \n")
+for candidate in ballot:
+    analysis.write(f"{candidate["Name"]}: {candidate["Percent"]:.3f}% ({candidate["Votes"]}) \n")
 analysis.write("--------------------------------- \n")
-analysis.write(f"Winner: -winner- \n")
+analysis.write(f"Winner: {winner} \n")
 analysis.write("--------------------------------- \n")
 analysis.close()
